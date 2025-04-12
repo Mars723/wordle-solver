@@ -1,7 +1,5 @@
 # Wordle Game Assistant
 
-<<<<<<< HEAD
-这是一个帮助解决 Wordle 类游戏的工具。支持3-10个字母的单词，并提供智能推荐功能，词库为GRE.txt文件，可优化。
 =======
 This is a tool to help solve Wordle-type games. It supports words with 3-10 letters and provides intelligent recommendation functionality.
 >>>>>>> 90fe848 (Translate the entire codebase to English)
