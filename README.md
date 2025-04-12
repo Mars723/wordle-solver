@@ -1,8 +1,6 @@
 # Wordle Game Assistant
 
-=======
 This is a tool to help solve Wordle-type games. It supports words with 3-10 letters and provides intelligent recommendation functionality.
->>>>>>> 90fe848 (Translate the entire codebase to English)
 
 ## Features
 
