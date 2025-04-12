@@ -1,63 +1,67 @@
-# Wordle 单词游戏助手
+# Wordle Game Assistant
 
+<<<<<<< HEAD
 这是一个帮助解决 Wordle 类游戏的工具。支持3-10个字母的单词，并提供智能推荐功能，词库为GRE.txt文件，可优化。
+=======
+This is a tool to help solve Wordle-type games. It supports words with 3-10 letters and provides intelligent recommendation functionality.
+>>>>>>> 90fe848 (Translate the entire codebase to English)
 
-## 功能特点
+## Features
 
-### 基础功能
-- 支持3-10个字母的单词游戏
-- 自动保存和显示每局游戏的历史记录
-- 可以进行多局游戏
-- 支持大小写字母输入（自动转换为大写）
+### Basic Functions
+- Supports word games with 3-10 letters
+- Automatically saves and displays the history of each game
+- Allows multiple game sessions
+- Supports uppercase and lowercase letter input (automatically converted to uppercase)
 
-### 智能匹配
-- 绿色字母：指定位置必须匹配的字母
-- 黄色字母：单词中必须包含但位置不对的字母
-- 灰色字母：单词中不能包含的字母
-- 自动处理字母优先级：
-  - 绿色字母优先级最高
-  - 如果一个字母已经是绿色，会自动从黄色和灰色中移除
-  - 如果一个字母是黄色，会自动从灰色中移除
+### Intelligent Matching
+- Green letters: Letters that must match at specific positions
+- Yellow letters: Letters that must be included in the word but are in wrong positions
+- Gray letters: Letters that must not appear in the word
+- Automatic letter priority handling:
+  - Green letters have the highest priority
+  - If a letter is already green, it's automatically removed from yellow and gray
+  - If a letter is yellow, it's automatically removed from gray
 
-### 智能推荐
-- 当可能的单词超过10个时，会推荐下一个最佳猜测
-- 推荐策略：选择能提供最多新信息的单词
-  - 不包含已知的灰色字母
-  - 优先选择包含最多未知字母的单词
-  - 在相同条件下选择使用频率较高的单词
+### Smart Recommendations
+- When possible words exceed 10, it recommends the best next guess
+- Recommendation strategy: Selects words that provide the most new information
+  - Excludes words containing known gray letters
+  - Prioritizes words containing the most unknown letters
+  - Under the same conditions, selects words with higher usage frequency
 
-### 记忆功能
-- 自动记住上一次猜测的黄色字母
-- 自动记住上一次猜测的灰色字母
-- 每次新猜测时可以直接添加新的字母
+### Memory Function
+- Automatically remembers yellow letters from previous guesses
+- Automatically remembers gray letters from previous guesses
+- Allows adding new letters directly with each new guess
 
-## 使用方法
+## How to Use
 
-1. 选择单词长度（3-10个字母）
+1. Select word length (3-10 letters)
 
-2. 输入已知信息：
-   - 绿色字母位置：用下划线_表示未知字母，如 "S____" 表示S在第一位
-   - 黄色字母：直接输入字母，如 "AT"
-   - 灰色字母：直接输入字母，如 "REIOU"
+2. Enter known information:
+   - Green letter positions: Use underscore _ for unknown letters, e.g., "S____" means S is in the first position
+   - Yellow letters: Enter letters directly, e.g., "AT"
+   - Gray letters: Enter letters directly, e.g., "REIOU"
 
-3. 查看结果：
-   - 显示可能的单词列表（如果超过10个只显示前10个）
-   - 显示符合条件的单词总数
-   - 如果可能的单词较多，会提供推荐猜测
+3. View results:
+   - Displays a list of possible words (if more than 10, only shows the first 10)
+   - Shows the total number of words matching the criteria
+   - If there are many possible words, provides a recommended guess
 
-4. 选择操作：
-   - 继续当前这局游戏
-   - 结束当前局并查看完整记录
-   - 开始新的一局
-   - 完全退出游戏
+4. Choose action:
+   - Continue the current game
+   - End the current game and view the complete record
+   - Start a new game
+   - Exit the game completely
 
-## 词库信息
-- 包含GRE词汇
-- 包含常用英语单词
-- 支持自动去重和分类
-- 包含单词使用频率信息
+## Word Database Information
+- Includes GRE vocabulary
+- Includes common English words
+- Supports automatic deduplication and categorization
+- Includes word frequency information
 
-## 注意事项
-- 确保输入格式正确
-- 绿色字母位置的长度必须与选择的单词长度相同
-- 同一个字母不要在不同类型中重复输入
+## Important Notes
+- Ensure correct input format
+- The length of green letter positions must match the selected word length
+- Avoid entering the same letter in different categories

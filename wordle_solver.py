@@ -10,39 +10,39 @@ class WordleSolver:
         return get_filtered_words()
     
     def find_words(self, green="", yellow="", grey=""):
-        print(f"\n调试信息:")
-        print(f"输入的绿色模式: {green}, 长度: {len(green)}")
-        print(f"黄色字母: {yellow}")
-        print(f"灰色字母: {grey}")
+        print(f"\nDebug information:")
+        print(f"Input green pattern: {green}, Length: {len(green)}")
+        print(f"Yellow letters: {yellow}")
+        print(f"Gray letters: {grey}")
         
-        # 确保green的长度正确
+        # Ensure green pattern has correct length
         if len(green) != self.word_length:
             green = green.ljust(self.word_length, '_')
         
-        # 转换green为known_positions
+        # Convert green to known_positions
         known_positions = {}
-        green_letters = set()  # 存储所有绿色字母
+        green_letters = set()  # Store all green letters
         for i, letter in enumerate(green):
             if letter != '_':
                 known_positions[i+1] = letter
                 green_letters.add(letter)
-        print(f"已知位置: {known_positions}")
+        print(f"Known positions: {known_positions}")
         
-        # 处理黄色字母（排除已在绿色中的字母）
+        # Process yellow letters (exclude those already in green)
         yellow_letters = set(yellow) - green_letters
-        print(f"必须包含的字母（排除绿色）: {yellow_letters}")
+        print(f"Letters that must be included (excluding green): {yellow_letters}")
         
-        # 处理灰色字母（排除已在绿色和黄色中的字母）
+        # Process grey letters (exclude those already in green and yellow)
         grey_letters = set(grey) - green_letters - yellow_letters
-        print(f"排除的字母（排除绿色和黄色）: {grey_letters}")
+        print(f"Excluded letters (excluding green and yellow): {grey_letters}")
         
-        # 检查每个单词
+        # Check each word
         possible_words = []
         for word in self.word_pool:
             if len(word) != self.word_length:
                 continue
             
-            # 检查绿色字母位置
+            # Check green letter positions
             match = True
             for pos, letter in known_positions.items():
                 if word[pos-1] != letter:
@@ -51,119 +51,119 @@ class WordleSolver:
             if not match:
                 continue
             
-            # 检查必须包含的黄色字母
+            # Check required yellow letters
             word_letters = set(word)
             if not yellow_letters.issubset(word_letters):
                 continue
             
-            # 检查不包含的灰色字母（已排除绿色和黄色）
+            # Check excluded gray letters (already excluding green and yellow)
             if any(letter in grey_letters for letter in word):
                 continue
             
             possible_words.append(word)
         
-        # 按照使用频率排序
+        # Sort by frequency
         possible_words.sort(key=lambda w: get_word_frequency(w), reverse=True)
         
         return possible_words
     
     def recommend_word(self, possible_words, known_letters, green="", yellow="", grey=""):
         """
-        推荐下一个猜测的单词
+        Recommend the next word to guess
         
-        参数:
-            possible_words: 当前可能的单词列表
-            known_letters: 已知的字母集合（绿色+黄色+灰色）
-            green: 绿色字母位置
-            yellow: 黄色字母
-            grey: 灰色字母
+        Parameters:
+            possible_words: Current list of possible words
+            known_letters: Known letters set (green + yellow + gray)
+            green: Green letter positions
+            yellow: Yellow letters
+            grey: Gray letters
         """
-        # 如果可能的单词少于等于10个，不推荐
+        # If possible words are less than or equal to 10, no recommendation
         if len(possible_words) <= 10:
             return None
         
-        # 获取所有长度相同的单词（不仅仅是可能的单词）
+        # Get all words of the same length (not just possible words)
         all_words_same_length = [w for w in self.word_pool if len(w) == self.word_length]
         
-        # 计算每个单词能提供的新信息量
+        # Calculate the information value of each word
         word_scores = {}
         for word in all_words_same_length:
-            # 跳过包含灰色字母的单词
+            # Skip words containing gray letters
             if any(letter in word for letter in grey):
                 continue
             
-            # 计算这个单词包含多少个新字母（不在known_letters中的字母）
+            # Calculate how many new letters this word contains (not in known_letters)
             word_letters = set(word)
             new_letters = word_letters - known_letters
             
-            # 计算分数：新字母数量 * 100 + 词频
+            # Calculate score: new letters count * 100 + word frequency
             score = len(new_letters) * 100 + get_word_frequency(word)
             word_scores[word] = score
         
         if not word_scores:
             return None
         
-        # 返回得分最高的单词
+        # Return the highest scoring word
         return max(word_scores.items(), key=lambda x: x[1])[0]
 
 def main():
-    while True:  # 外层循环处理多局游戏
-        # 让用户选择单词长度
+    while True:  # Outer loop handles multiple games
+        # Let user select word length
         while True:
             try:
-                print("\n可选择的单词长度：3-10")
-                length = int(input("请选择单词长度: "))
+                print("\nAvailable word lengths: 3-10")
+                length = int(input("Please select word length: "))
                 if 3 <= length <= 10:
                     break
-                print("只支持3-10字母的单词，请重新选择")
+                print("Only words with 3-10 letters are supported. Please select again.")
             except ValueError:
-                print("请输入3-10之间的数字")
+                print("Please enter a number between 3 and 10")
         
         solver = WordleSolver(length)
-        history = []  # 用于存储历史记录
-        previous_grey = ""  # 存储上一次的灰色字母
-        previous_yellow = ""  # 存储上一次的黄色字母
+        history = []  # Store game history
+        previous_grey = ""  # Store previous gray letters
+        previous_yellow = ""  # Store previous yellow letters
         
-        while True:  # 内层循环处理单局游戏
-            print("\n" + "="*50)  # 分隔线
+        while True:  # Inner loop handles a single game
+            print("\n" + "="*50)  # Separator
             
-            # 显示历史记录
+            # Display history
             if history:
-                print("\n历史猜测记录：")
+                print("\nHistory of previous guesses:")
                 for i, record in enumerate(history, 1):
-                    print(f"\n第{i}次猜测：")
-                    print(f"绿色字母位置: {record['green']}")
-                    print(f"黄色字母: {record['yellow']}")
-                    print(f"灰色字母: {record['grey']}")
-                    print(f"可能的单词: {record['words']}")
+                    print(f"\nGuess #{i}:")
+                    print(f"Green letter positions: {record['green']}")
+                    print(f"Yellow letters: {record['yellow']}")
+                    print(f"Gray letters: {record['grey']}")
+                    print(f"Possible words: {record['words']}")
             
-            print("\n请输入新的猜测：")
-            print(f"绿色字母格式：用_表示未知字母，例如 {'S' + '_'*(length-1)}")
-            green = input("绿色字母位置: ").upper().strip()
+            print("\nEnter new guess:")
+            print(f"Green letter format: Use _ for unknown letters, e.g. {'S' + '_'*(length-1)}")
+            green = input("Green letter positions: ").upper().strip()
             
-            # 显示并使用上一次的黄色字母
+            # Display and use previous yellow letters
             if previous_yellow:
-                print(f"\n黄色字母（{previous_yellow}）")  # 先显示已有的黄色字母
-                print("请输入新的黄色字母（直接回车表示不添加）：")
+                print(f"\nYellow letters ({previous_yellow})")  # First show existing yellow letters
+                print("Enter new yellow letters (press Enter for none):")
                 new_yellow = input().upper().strip()
-                yellow = previous_yellow + new_yellow  # 合并旧的和新的黄色字母
-                print(f"当前所有黄色字母：{yellow}")  # 显示合并后的结果
+                yellow = previous_yellow + new_yellow  # Combine old and new yellow letters
+                print(f"All current yellow letters: {yellow}")  # Show combined result
             else:
-                print("\n黄色字母格式：直接输入字母，例如 AT")
-                yellow = input("黄色字母: ").upper().strip()
+                print("\nYellow letter format: Enter letters directly, e.g. AT")
+                yellow = input("Yellow letters: ").upper().strip()
             
-            # 显示并使用上一次的灰色字母
+            # Display and use previous gray letters
             if previous_grey:
-                print(f"\n灰色字母（{previous_grey}）")  # 先显示已有的灰色字母
-                print("请输入新的灰色字母（直接回车表示不添加）：")
+                print(f"\nGray letters ({previous_grey})")  # First show existing gray letters
+                print("Enter new gray letters (press Enter for none):")
                 new_grey = input().upper().strip()
-                grey = previous_grey + new_grey  # 合并旧的和新的灰色字母
-                print(f"当前所有灰色字母：{grey}")  # 显示合并后的结果
+                grey = previous_grey + new_grey  # Combine old and new gray letters
+                print(f"All current gray letters: {grey}")  # Show combined result
             else:
-                print("\n灰色字母格式：直接输入字母，例如 REIOU")
-                grey = input("灰色字母: ").upper().strip()
+                print("\nGray letter format: Enter letters directly, e.g. REIOU")
+                grey = input("Gray letters: ").upper().strip()
             
-            # 更新previous_grey和previous_yellow，用于下一次猜测
+            # Update previous_grey and previous_yellow for next guess
             previous_grey = grey
             previous_yellow = yellow
             
@@ -173,13 +173,13 @@ def main():
                 grey=grey
             )
             
-            # 计算已知的所有字母
+            # Calculate all known letters
             known_letters = set(green.replace('_', '')) | set(yellow) | set(grey)
             
-            # 获取推荐单词
+            # Get recommended word
             recommended = solver.recommend_word(words, known_letters, green, yellow, grey)
             
-            # 保存本次记录
+            # Save this record
             history.append({
                 'green': green,
                 'yellow': yellow,
@@ -187,32 +187,32 @@ def main():
                 'words': words[:10] if len(words) > 10 else words
             })
             
-            print("\n本次可能的单词：")
+            print("\nPossible words for this guess:")
             print(words[:10] if len(words) > 10 else words)
-            print(f"共找到 {len(words)} 个可能的单词")
+            print(f"Found {len(words)} possible words")
             if recommended:
-                print(f"\n推荐猜测单词: {recommended}")
-                print("(此单词不包含已知字母，可以帮助排除更多可能性)")
+                print(f"\nRecommended guess word: {recommended}")
+                print("(This word excludes known letters to help eliminate more possibilities)")
             
-            # 询问是否继续当前这局
-            again = input("\n继续这局游戏？(y/n): ").lower().strip()
+            # Ask whether to continue this game
+            again = input("\nContinue this game? (y/n): ").lower().strip()
             if again != 'y':
                 break
         
-        # 显示本局的完整历史记录
+        # Display complete history for this game
         print("\n" + "="*50)
-        print("\n本局游戏结束！完整猜测记录：")
+        print("\nGame over! Complete guess history:")
         for i, record in enumerate(history, 1):
-            print(f"\n第{i}次猜测：")
-            print(f"绿色字母位置: {record['green']}")
-            print(f"黄色字母: {record['yellow']}")
-            print(f"灰色字母: {record['grey']}")
-            print(f"可能的单词: {record['words']}")
+            print(f"\nGuess #{i}:")
+            print(f"Green letter positions: {record['green']}")
+            print(f"Yellow letters: {record['yellow']}")
+            print(f"Gray letters: {record['grey']}")
+            print(f"Possible words: {record['words']}")
         
-        # 询问是否开始新的一局
-        new_game = input("\n是否开始新的一局？(y/n): ").lower().strip()
+        # Ask whether to start a new game
+        new_game = input("\nStart a new game? (y/n): ").lower().strip()
         if new_game != 'y':
-            print("\n游戏结束，感谢使用！")
+            print("\nGame ended. Thanks for playing!")
             break
 
 if __name__ == "__main__":

@@ -1,21 +1,21 @@
 def load_words_from_files():
-    """从GRE文件加载单词"""
-    words = set()  # 使用集合去重
+    """Load words from GRE file"""
+    words = set()  # Use set for deduplication
     
-    # 从GRE文件加载
+    # Load from GRE file
     try:
         with open('GRE.txt', 'r', encoding='utf-8') as file:
             content = file.read()
             lines = content.splitlines()
             
-            # 处理每一行
+            # Process each line
             for line_num, line in enumerate(lines, 1):
                 try:
-                    # 跳过空行
+                    # Skip empty lines
                     if not line.strip():
                         continue
                     
-                    # 清理行，移除中文和特殊字符
+                    # Clean the line, remove Chinese and special characters
                     parts = []
                     current_word = ""
                     for char in line:
@@ -28,10 +28,10 @@ def load_words_from_files():
                     if current_word:
                         parts.append(current_word)
                     
-                    # 处理每个可能的单词
+                    # Process each possible word
                     for word in parts:
                         word = word.upper()
-                        # 只保留纯英文单词且长度大于等于3
+                        # Only keep pure English words with length >= 3
                         if word.isalpha() and len(word) >= 3 and not any(ord(c) > 127 for c in word):
                             words.add(word)
                             
@@ -39,34 +39,34 @@ def load_words_from_files():
                     continue
     
     except FileNotFoundError:
-        print("错误：找不到文件 GRE.txt")
+        print("Error: File GRE.txt not found")
         return []
     except Exception as e:
-        print(f"读取文件时出错: {str(e)}")
+        print(f"Error reading file: {str(e)}")
         return []
     
-    # 添加数字单词（3-10字母）
+    # Add number words (3-10 letters)
     number_words = {
-        # 3字母
+        # 3 letters
         "ONE", "TWO", "SIX", "TEN",
-        # 4字母
+        # 4 letters
         "ZERO", "FOUR", "FIVE", "NINE",
-        # 5字母
+        # 5 letters
         "THREE", "SEVEN", "EIGHT",
-        # 6字母
+        # 6 letters
         "ELEVEN", "TWELVE",
-        # 7字母
+        # 7 letters
         "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTY", "HUNDRED",
-        # 8字母
+        # 8 letters
         "EIGHTEEN", "NINETEEN", "THOUSAND",
-        # 9字母
+        # 9 letters
         "SEVENTEEN", "FORTY", "FIFTY", "SIXTY", "EIGHTY", "NINETY",
-        # 10字母
+        # 10 letters
         "TWENTY", "THIRTY", "MILLION", "BILLION"
     }
     words.update(number_words)
     
-    # 添加额外的单词
+    # Add additional words
     additional_words = {
         "HARNESS",
         "OVERTIME",
@@ -75,10 +75,10 @@ def load_words_from_files():
     
     return sorted(list(words))
 
-# 加载所有单词
+# Load all words
 ALL_WORDS = load_words_from_files()
 
-# 按长度分类单词
+# Categorize words by length
 WORD_DATABASE = {
     "THREE_LETTER_WORDS": [w for w in ALL_WORDS if len(w) == 3],
     "FOUR_LETTER_WORDS": [w for w in ALL_WORDS if len(w) == 4],
@@ -90,21 +90,21 @@ WORD_DATABASE = {
     "TEN_LETTER_WORDS": [w for w in ALL_WORDS if len(w) == 10]
 }
 
-# 单词频率信息（可以根据需要调整）
+# Word frequency information (can be adjusted as needed)
 WORD_FREQUENCIES = {
-    # 常用词频率设为90-100
+    # Common words with frequency 90-100
     "ABOUT": 95, "AFTER": 95, "AGAIN": 95, "ALONE": 95, "ALONG": 95,
     "ALREADY": 94, "ALWAYS": 94, "AMOUNT": 94,
     "ANIMAL": 93, "ANSWER": 93, "ANYONE": 93,
     "APPEAR": 92, "AROUND": 92, "ARRIVE": 92,
     
-    # 其他词默认频率为1
+    # Other words default to frequency 1
 }
 
 def get_word_frequency(word):
-    """获取单词的使用频率"""
+    """Get the usage frequency of a word"""
     return WORD_FREQUENCIES.get(word.upper(), 1)
 
 def get_filtered_words():
-    """获取所有单词"""
+    """Get all words"""
     return ALL_WORDS
